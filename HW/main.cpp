@@ -1,20 +1,25 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
-#include <string>
-#include <cmath>
-#include <cassert>
+#include <cstring>
 #include <vector>
+#include <list>
 
-void sort(std::vector<int>& arr){
+#define MAXLEN 100
 
-    int tmp = 0;
+typedef struct store_struct{
+
+    int start_time;
+    int end_time;
+} Store;
+
+void sort(std::vector<Store>& arr){
+
+    Store tmp;
 
     for (int i = 0; i < arr.size(); i++){
 
         for (int j = 1; j < arr.size() - i; j++){
 
-            if (arr[j - 1] > arr[j]){
+            if (arr[j - 1].start_time > arr[j].start_time){
 
                 tmp = arr[j -1];
                 arr[j - 1] = arr[j];
@@ -24,71 +29,72 @@ void sort(std::vector<int>& arr){
     }
 }
 
-void get_arr(std::vector<int>& arr){
+void get_arr(std::vector<Store>& arr, int num_count){
 
     int elem = -1;
-    std::cin >> elem;
+    char str[MAXLEN] = {'!'};
+    char delim[4] = {" :\n"};
 
-    while (elem != 0){
+    for (int i = 0; i < num_count; i++){
 
-        arr.push_back(elem);
-        std::cin >> elem;
+        Store tmp;
+
+        //std::cin >> str;
+        scanf("%s", str);
+        tmp.start_time = atoi(strtok(str, " :\n")) * 60 + atoi(strtok(nullptr, " :\n"));
+        //std::cin >> str;
+        scanf("%s", str);
+        tmp.end_time = atoi(strtok(str, " :\n")) * 60 + atoi(strtok(nullptr, " :\n"));
+
+        arr.push_back(tmp);
     }
 
     sort(arr);
 }
 
-int main(){
+int size_of_use(std::list<Store>& in_use, Store new_elem){
 
-    std::vector<int> arr_A;
-    std::vector<int> arr_B;
+    int cur_time = new_elem.start_time;
+    auto list_itter = in_use.begin(), tmp = in_use.begin();
 
-    get_arr(arr_A);
-    get_arr(arr_B);
+    while (list_itter != in_use.end()){
 
-    int itter_A = 0, itter_B = 0;
-    while ((itter_A < arr_A.size()) && (itter_B < arr_B.size())){
-        
-        if (arr_A[itter_A] != arr_B[itter_B]){
+        if (list_itter->end_time < cur_time){
             
-            if (arr_A[itter_A] < arr_B[itter_B]){
-
-                while ((arr_A[itter_A] < arr_B[itter_B]) && (itter_A < arr_A.size())){
-
-                    std::cout << arr_A[itter_A] << ' ';
-                    itter_A++;
-                }
-            } else{
-                
-                while ((arr_B[itter_B] < arr_A[itter_A]) && (itter_B < arr_B.size())){
-
-                    std::cout << arr_B[itter_B] << ' ';
-                    itter_B++;
-                } 
-            }
+            tmp = list_itter;
+            ++list_itter;
+            in_use.erase(tmp);
         } else{
 
-            if (itter_A < arr_A.size()){
-
-                itter_A++;
-            }
-
-            if (itter_B < arr_B.size()){
-
-                itter_B++;
-            }
+            ++list_itter;
         }
     }
 
-    while (itter_A < arr_A.size()){
+    in_use.push_back(new_elem);
 
-        std::cout << arr_A[itter_A] << ' ';
-        itter_A++;
+    return in_use.size();
+}
+
+
+int main(){
+
+    std::vector<Store> store_room;
+    std::list<Store> in_use;
+    int number_of_stores = 0, cur_size = 0, max_in_use_size = 0;
+
+    //std::cin >> number_of_stores;
+    scanf("%i", &number_of_stores);
+
+    get_arr(store_room, number_of_stores);
+
+    for (int i = 0; i < store_room.size(); i++){
+
+        if ((cur_size = size_of_use(in_use, store_room[i])) > max_in_use_size){
+
+            max_in_use_size = cur_size;
+        }
     }
 
-    while (itter_B < arr_B.size()){
-
-        std::cout << arr_B[itter_B] << ' ';
-        itter_B++;
-    }
+    printf("%i", max_in_use_size);
+    //std::cout << max_in_use_size;
 }
