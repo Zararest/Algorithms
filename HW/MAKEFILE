@@ -1,10 +1,6 @@
-H1_5:
-	g++ H1_5_permutation.cpp -o H1_5
-
-main:
-	g++ main.cpp -o main
+test:
+	g++ test.cpp -o test
 
 .PHONY : clean
 clean: 
-	rm -rf *.o H1_6
-	rm -rf *.o main
+	rm -rf *.o test
