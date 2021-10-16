@@ -1,77 +1,58 @@
-#include <iostream>
-#include <cstring>
-#include <vector>
+#include <cassert>
+#include <stdio.h>
 #include <algorithm>
+#include <cstring>
 
 #define MAXLEN 100
 
-typedef struct store_struct{
 
-    int start_time;
-    int end_time;
-} Store;
+void merge(FILE* first_line, FILE* second_line, FILE* output, int first_line_len, int second_line_len){
 
-bool compar(Store first, Store second){
+    int fir_itter = 0, sec_itter = 0;
+    char fir_line_str[MAXLEN], sec_line_str[MAXLEN];
 
-    return first.start_time < second.start_time;
-}
+    fscanf(first_line, "%s", fir_line_str);
+    fscanf(second_line , "%s", sec_line_str);
 
-void get_arr(std::vector<Store>& arr, int num_count){
-
-    int elem = -1;
-    char str[MAXLEN] = {'!'};
-    char delim[4] = {" :\n"};
-
-    for (int i = 0; i < num_count; i++){
-
-        Store tmp;
-
-        scanf("%s", str);
-        tmp.start_time = atoi(strtok(str, " :\n")) * 60 + atoi(strtok(nullptr, " :\n"));
+    while ((fir_itter < first_line_len) && (sec_itter < second_line_len)){
         
-        scanf("%s", str);
-        tmp.end_time = atoi(strtok(str, " :\n")) * 60 + atoi(strtok(nullptr, " :\n"));
+        if (strcmp(fir_line_str, sec_line_str) < 0){
+            
+            fprintf(output, "%s\n", fir_line_str);
+            fscanf(first_line, "%s", fir_line_str);
+            fir_itter++;
+        } else{
 
-        arr.push_back(tmp);
-    }
-
-    sort(arr.begin(), arr.end(), compar);
-}
-
-int size_of_use(std::vector<Store>& in_use, Store new_elem){
-
-    int cur_time = new_elem.start_time;
-
-    for (int i = 0; i < in_use.size(); i++){
-
-        if (in_use[i].end_time < cur_time){
-
-            in_use.erase(in_use.begin() + i);
+            fprintf(output, "%s\n", sec_line_str);
+            fscanf(second_line, "%s", sec_line_str);
+            sec_itter++;
         }
     }
 
-    in_use.push_back(new_elem);
+    if (fir_itter != first_line_len){
 
-    return in_use.size();
+        while (fir_itter < first_line_len){
+            
+            fprintf(output, "%s\n", fir_line_str);
+            fir_itter++;
+            fscanf(first_line, "%s", fir_line_str);
+        }
+    } else{
+
+        while (sec_itter < second_line_len){
+
+            fprintf(output, "%s\n", sec_line_str);
+            sec_itter++;
+            fscanf(second_line, "%s", sec_line_str);
+        }
+    }   
 }
-
 
 int main(){
 
-    std::vector<Store> in_use, store_room;
-    int number_of_stores = 0, cur_size = 0, max_in_use_size = 0;
+    FILE* first_line = fopen("./bin/test_line_1.txt", "r");
+    FILE* second_line = fopen("./bin/test_line_2.txt", "r");
+    FILE* output = fopen("./bin/test.txt", "w+");
 
-    scanf("%i", &number_of_stores);
-
-    get_arr(store_room, number_of_stores);
-
-    for (int i = 0; i < store_room.size(); i++){
-
-        if ((cur_size = size_of_use(in_use, store_room[i])) > max_in_use_size){
-
-            max_in_use_size = cur_size;
-        }
-    }
-
-    printf("%i", max_in_use_size);
+    merge(first_line, second_line, output, 10, 5);
 }
