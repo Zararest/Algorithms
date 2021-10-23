@@ -1,9 +1,9 @@
 #include <cassert>
-#include <stdio.h>
+#include <stdio.h>//замена printf scanf ускорила программу в 2 раза
 #include <algorithm>
 #include <cstring>
 
-#define MAXLEN 10001
+#define MAXLEN 10002
 #define BUFFER_SIZE 16
 
 struct Buffer{
@@ -37,7 +37,7 @@ struct Line{
 
     void add_elem(const char* new_str){
 
-        fprintf(file, "%s\n", new_str);
+        fputs(new_str, file);
         cur_arr_position++;
     }
 
@@ -45,7 +45,7 @@ struct Line{
 
         if (cur_arr_position == -1){
 
-            if (fscanf(file, "%s", cur_elem) != EOF){
+            if (fgets(cur_elem, MAXLEN, file) != 0){
 
                 cur_arr_position++;
             } else{
@@ -61,14 +61,14 @@ struct Line{
         }
 
         if (position - 1 == cur_arr_position){
-
-            if (fscanf(file, "%s", cur_elem) != EOF){
+            
+            if (fgets(cur_elem, MAXLEN, file) != 0){
 
                 cur_arr_position++;
                 return cur_elem;
             } else{
 
-                printf("End of line!!!!\n");
+                printf("End of line\n");
                 return nullptr;
             }
         }
@@ -83,15 +83,14 @@ struct Line{
         char tmp_str[MAXLEN];
 
         fseek(file, SEEK_SET, 0);
-        while (fscanf(file, "%s", tmp_str) != EOF){
+        while (fgets(tmp_str, MAXLEN, file) != 0){
 
-            fprintf(output, "%s\n", tmp_str);
+            fputs(tmp_str, output);
         }
         
         fseek(file, SEEK_SET, old_position);
     }
 };
-
 
 int compare_string(const void* fir_str, const void* sec_str){
 
@@ -120,7 +119,7 @@ int buffer_sort(FILE* input_file, Line& first_line, Line& second_line){
 
     while (!end_of_file){
 
-        if (fscanf(input_file, "%s", buffer.data[itter]) != EOF){//
+        if (fgets(buffer.data[itter], MAXLEN, input_file) != 0){
 
             number_of_str++;
             buffer.cur_size++;
@@ -177,11 +176,11 @@ void merge(Line& first_line, Line& second_line, FILE* output, int first_line_len
         
         if (strcmp(first_line.get_elem(fir_itter), second_line.get_elem(sec_itter)) < 0){
             
-            fprintf(output, "%s\n", first_line.get_elem(fir_itter)); 
+            fputs(first_line.get_elem(fir_itter), output); 
             fir_itter++;
         } else{
 
-            fprintf(output, "%s\n", second_line.get_elem(sec_itter));
+            fputs(second_line.get_elem(sec_itter), output);
             sec_itter++;
         }
     }
@@ -190,14 +189,14 @@ void merge(Line& first_line, Line& second_line, FILE* output, int first_line_len
 
         while (fir_itter < first_line_len){
             
-            fprintf(output, "%s\n", first_line.get_elem(fir_itter));
+            fputs(first_line.get_elem(fir_itter), output);
             fir_itter++; 
         }
     } else{
 
         while (sec_itter < second_line_len){
 
-            fprintf(output, "%s\n", second_line.get_elem(sec_itter));
+            fputs(second_line.get_elem(sec_itter), output);
             sec_itter++; 
         }
     }   
@@ -212,7 +211,7 @@ int put_str_to(FILE* input, Line& line, int cur_series_len){
 
     for (i = 0; i < cur_series_len; i++){
 
-        fscanf(input, "%s", cur_str);
+        fgets(cur_str, MAXLEN, input);
         line.add_elem(cur_str);
     }
 
@@ -232,7 +231,7 @@ void split_into_lines(Line& first_line, Line& second_line, FILE* output, int cur
     number_of_chunks = number_of_str / cur_series_len;
     small_chunk = number_of_str % cur_series_len;
 
-    while (number_of_chunks > 0){//тут надо условие поменять 
+    while (number_of_chunks > 0){
             
         if (cur_line == 1){
 
@@ -304,10 +303,10 @@ void merge_sort(Line& first_line, Line& second_line, FILE* output, int number_of
 }
 
 int main(){
-
+    
     FILE* input_file = fopen("../bin/input.txt", "r");
     
-    FILE* first_line_file = fopen("../bin/first_line.txt", "w+t");
+    FILE* first_line_file = fopen("../bin/first_line.txt", "w+t"); //для отправки надо поменять путь
     FILE* second_line_file = fopen("../bin/second_line.txt", "w+t");
     FILE* output_file = fopen("../bin/output.txt", "w+t");
 
@@ -331,4 +330,7 @@ int main(){
     }
     
     fclose(output_file);
+    fclose(first_line_file);
+    fclose(second_line_file); 
 }
+
