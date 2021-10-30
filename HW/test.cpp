@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <cstring>
+#include <cmath>
 
 #define MAXLEN 100
 
@@ -50,9 +51,12 @@ void merge(FILE* first_line, FILE* second_line, FILE* output, int first_line_len
 
 int main(){
 
-    FILE* first_line = fopen("./bin/test_line_1.txt", "r");
-    FILE* second_line = fopen("./bin/test_line_2.txt", "r");
-    FILE* output = fopen("./bin/test.txt", "w+");
+    int a = 4, b = 3;
 
-    merge(first_line, second_line, output, 10, 5);
+    printf("%lf\n", ceil(1.1));
+    //FILE* first_line = fopen("./bin/test_line_1.txt", "r");
+    //FILE* second_line = fopen("./bin/test_line_2.txt", "r");
+    //FILE* output = fopen("./bin/test.txt", "w+");
+
+    //merge(first_line, second_line, output, 10, 5);
 }
