@@ -6,7 +6,6 @@
 #include <ctime>
 #include <functional>
 #include <queue>
-//в четвертом номере нужно сделать дерево отрезков
 
 double merge(std::priority_queue<double, std::vector<double>, std::greater<double>>& companies, int n){
 
