@@ -1,11 +1,10 @@
 #include <iostream>
-#include <cstring>
 #include <vector>
-#include <ctime>
+#include <cassert>
 
-#define MAXLEN 20000001
+#define MAXLEN 20000000
 
-void calc_primal(int* arr, int n){
+void calc_primal(std::vector<bool>& arr, int n){
     
     int cur_number = 0;
 
@@ -13,7 +12,7 @@ void calc_primal(int* arr, int n){
 
         for (int j = 2; (j <= i) && ((cur_number = j * i) < MAXLEN + n); j++){
 
-            arr[cur_number] = 1;
+            arr[cur_number] = true;
         }
     }
 }
@@ -24,20 +23,31 @@ int main(){
 
     std::cin >> m >> n;
 
-    int* primal_numbers = new int[MAXLEN + n];
-    bool number_have_found = false;
-    int cur_number = 2, num_of_primals = 0;
-    int begin_itter = 0, end_itter = 0;
+    std::vector<bool> primal_numbers(MAXLEN + n);
+    int num_of_primals = 0;
     
-    long start_time = clock();
     calc_primal(primal_numbers, n);
-    long end_time = clock();
 
-    for (int i = 0; num_of_primals < m; i++){
+    int begin = 1, end = n;
 
-        if (primal_numbers[i] != 1){
+    for (int i = 1; i <= n; i++){
 
-            num_of_primals++;
-        }
+        num_of_primals += 1 - primal_numbers[i]; //раньше 0 - primal
     }
+
+    while (num_of_primals != m){
+
+        if (begin >= MAXLEN){
+
+            std::cout << -1 << std::endl;
+            return 0;
+        }
+
+        num_of_primals += primal_numbers[begin] * primal_numbers[begin] - 1;
+        num_of_primals += (-1) * primal_numbers[end + 1] + 1;
+        begin++;
+        end++;
+    }
+
+    std::cout << begin << std::endl;
 }
