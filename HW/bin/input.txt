@@ -1,9 +1,6 @@
-8
-BCB
-ABA
-BCB
-BAA
-BBC
-CCB
-CBC
-CBC
+6 9 5 1
+0 2
+1 3
+2 1
+2 2
+2 3
